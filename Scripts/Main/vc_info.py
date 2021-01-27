@@ -1,13 +1,13 @@
 #This Script Pulls ESXi Host Version information from your vcenter server.
 import requests
-
+import getpass
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 
-vcenter_host = "[VCENTER IP]"
+vcenter_host =  input("Enter your vCenter IP or Hostname: ")
 vcenter_port = 443
-vcenter_username = "user@VSPHERE.local"
-vcenter_password = "password"
+vcenter_username = input("vCenter Username: ")
+vcenter_password = getpass.getpass(prompt="Password: ", stream=None)
  
 # Connecting to vCenter
 try:
