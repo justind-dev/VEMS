@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # VEMS Core
-# Copyright (c) 2021 Lock & Byte Technologies, Inc. All Rights Reserved.
+# Copyright (c) 2021 Justin Dunn. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
