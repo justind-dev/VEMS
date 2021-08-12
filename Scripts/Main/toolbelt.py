@@ -40,7 +40,7 @@ class Vcenter:
             try:
                 expirations[host.name] = host.configManager.certificateManager.certificateInfo.notAfter
             except:
-                datetime.datetime(1988, 12, 30)
+                datetime(1988, 12, 30)
                 continue
         return expirations            
     
