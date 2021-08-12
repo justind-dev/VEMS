@@ -42,7 +42,15 @@ class Vcenter:
             except:
                 datetime(1988, 12, 30)
                 continue
-        return expirations            
+        return expirations
+    
+    def certificates_expiring_in_days(self, number_of_days):
+        expirations = []
+        expiration_datetime = datetime.now() + datetime.timedelta(days=number_of_days)
+        for k, v in self.certificate_expirations():
+            if v >= expiration_datetime:
+                expirations.append(k)
+        return expirations
     
     def get_certificate_expired(self,days):
         today = str(datetime.now()).split()
