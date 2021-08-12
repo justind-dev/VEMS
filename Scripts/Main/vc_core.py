@@ -8,9 +8,6 @@ Scripts'
 
 """
 
-from pyVim.connect import SmartConnectNoSSL, Disconnect
-from pyVmomi import vim, vmodl
-import atexit
 from toolbelt import Vcenter
 
 def main():
