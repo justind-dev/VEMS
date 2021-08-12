@@ -27,7 +27,7 @@ import getpass
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 import atexit
-import toolbelt
+from toolbelt import get_host_expiring_certs, get_vm_hosts, get_host_cert_dates
 #place holder for vcenter connection
 vc = ''
 
@@ -67,8 +67,8 @@ def main():
         get_vcinfo()
         #lets get all hosts and all of the expiring certificates
         try: 
-            hosts = toolbelt.get_vm_hosts(vc)
-            toolbelt.get_host_expiring_certs(vc)
+            hosts = get_vm_hosts(vc)
+            get_host_expiring_certs(vc)
         except:
             pass
 
