@@ -13,7 +13,7 @@ class Vcenter:
         self.use_ssl = use_ssl
         self.si = self.connect()
        
-    def connect():
+    def connect(self):
         if self.use_ssl:
             raise Exception("SSL not yet implemented")
         
