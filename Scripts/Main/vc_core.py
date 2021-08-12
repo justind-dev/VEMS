@@ -28,7 +28,7 @@ import getpass
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 import atexit
-from toolbelt import get_host_expiring_certs, get_vm_hosts, get_host_cert_dates
+import toolbelt
 
 def main():
     connection = Vcenter(host="",user="",pwd="")
