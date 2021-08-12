@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
-from datetime import datetime, timedelta
+import datetime
 
 
 class Vcenter:
@@ -40,13 +40,13 @@ class Vcenter:
             try:
                 expirations[host.name] = host.configManager.certificateManager.certificateInfo.notAfter
             except:
-                datetime(1988, 12, 30)
+                datetime.datetime(1988, 12, 30)
                 continue
         return expirations
     
     def certificates_expiring_in_days(self, number_of_days):
         expirations = []
-        expiration_datetime = datetime.now() + datetime.timedelta(days=number_of_days)
+        expiration_datetime = datetime.datetime.now() + datetime.timedelta(days=number_of_days)
         for k, v in self.certificate_expirations():
             if v >= expiration_datetime:
                 expirations.append(k)
@@ -64,7 +64,7 @@ class Vcenter:
             expires_date = expires_date.split()
             expires_date = str(expires_date[0])
             try:               
-                expires_date = datetime.strptime(expires_date,"%Y-%m-%d")
+                expires_date = datetime.datetime.strptime(expires_date,"%Y-%m-%d")
             except ValueError as e:
                 print(f"Date conversion error: {e}")
                 continue
