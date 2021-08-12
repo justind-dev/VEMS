@@ -2,7 +2,8 @@
 import getpass
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
-from datetime import datetime
+from datetime import datetime, timedelta
+
 
 class Vcenter:
     def __init__(self,host,user,pwd,port=443,use_ssl=True):
@@ -12,6 +13,8 @@ class Vcenter:
         self.port = port
         self.use_ssl = use_ssl
         self.si = self.connect()
+        self.content = ''
+        self.allhosts = self.get_hosts()
        
     def connect(self):
         if self.use_ssl:
@@ -24,29 +27,29 @@ class Vcenter:
             print ("I/O error({0}): {1}".format(e.errno, e.strerror))
             return 0
 
-    def get_vm_hosts(self):
-        hosts = []
-        content_view = self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
+    def get_hosts(self):
+        return self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
                                                             [vim.HostSystem],
-                                                            True)
-        host_view = content_view.view
-        content_view.Destroy()
-        for host in host_view:
-            hosts.append(host.name)
-        return hosts
+                                                            True).view
+    def print_hostnames(self):
+        for host in self.allhosts:
+            print(host.name)
 
-    def get_host_cert_expiration_date(self,esxi_hostname):
-        mob = vim.HostSystem
-        content = self.si.content
-        mob_list = content.viewManager.CreateContainerView(content.rootFolder,
-                                                        [mob],
-                                                        True)
-        for mob in mob_list.view:
-            if mob.name == esxi_hostname:
-                cert_info = mob.configManager.certificateManager.certificateInfo
-                expiration_date = str(cert_info.notAfter).split(" ")
-                expiration_date = datetime.strptime(expiration_date[0],"%y/%m/%d")
-        mob_list.Destroy()
-        return expiration_date
+    def get_certificate_expired(self,days):
+        for host in self.allhosts:
+            expires_string = str(host.configManager.certificateManager.certificateInfo.notAfter).split()
+            expires_string = expires_string[0]
+            expires_date = datetime.strptime(expires_string,"%Y-%d-%m")
+            print(expires_date)
+            if  (expires_date < datetime.now() + timedelta(days)):
+                print(f"Host: {host.name} certificate expires in less than 30 days on {expires_date}")
+
+
+    
+
+
+
+
+
 
 
