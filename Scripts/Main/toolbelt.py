@@ -1,6 +1,12 @@
 #!/usr/bin/env python
+
 from pyVmomi import vim, vmodl
 from datetime import datetime
+
+class host:
+    def __init__(self) -> None:
+        super().__init__()
+
 
 def get_vm_hosts(si):
     host_view = si.content.viewManager.CreateContainerView(si.content.rootFolder,
