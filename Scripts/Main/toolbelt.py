@@ -37,7 +37,11 @@ class Vcenter:
     def certificate_expirations(self):
         expirations = {}
         for host in self.allhosts:
-            expirations[host.name] = host.configManager.certificateManager.certificateInfo.notAfter
+            try:
+                expirations[host.name] = host.configManager.certificateManager.certificateInfo.notAfter
+            except:
+                datetime.datetime(1988, 12, 30)
+                continue
         return expirations            
     
     def get_certificate_expired(self,days):
