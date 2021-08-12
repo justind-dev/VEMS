@@ -15,7 +15,7 @@ class Vcenter:
        
     def connect():
         if self.use_ssl:
-            raise Exception("SSL not yet implemented)
+            raise Exception("SSL not yet implemented")
         
         try:
             self.si = SmartConnectNoSSL(host=self.host, user=self.user, pwd=self.pwd, port=self.port)
