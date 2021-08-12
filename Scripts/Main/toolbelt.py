@@ -47,33 +47,8 @@ class Vcenter:
     def certificates_expiring_in_days(self, number_of_days):
         expirations = []
         expiration_datetime = datetime.datetime.now() + datetime.timedelta(days=number_of_days)
-        for k, v in self.certificate_expirations():
+        for k, v in self.certificate_expirations().items():
             if v >= expiration_datetime:
                 expirations.append(k)
         return expirations
     
-    def get_certificate_expired(self,days):
-        today = str(datetime.now()).split()
-        today = datetime.strptime(today[0],"%Y-%d-%m")
-        for host in self.allhosts:
-            try: 
-                expires_date = str(host.configManager.certificateManager.certificateInfo.notAfter)
-            except:
-                print(f"Issue retrieving certificate details on {host.name}")
-                continue
-            expires_date = expires_date.split()
-            expires_date = str(expires_date[0])
-            try:               
-                expires_date = datetime.datetime.strptime(expires_date,"%Y-%m-%d")
-            except ValueError as e:
-                print(f"Date conversion error: {e}")
-                continue
-            #print(f"Host: {host.name} certificate expires on {expires_date}")
-            try: 
-                if  (expires_date < today + timedelta(days)):
-                    print(f"Host: {host.name} certificate expires in less than 30 days on {expires_date}")
-                else:
-                    print(f"Host: {host.name} certificate is OK")
-            except:
-                print(f"There was an error comparing dates...")
-                continue
