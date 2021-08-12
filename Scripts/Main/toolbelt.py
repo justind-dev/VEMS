@@ -34,7 +34,7 @@ class Vcenter:
         for host in self.allhosts:
             print(host.name)
 
-    def certificate_expirations(self):
+    def get_certificate_expirations(self):
         expirations = {}
         for host in self.allhosts:
             try:
