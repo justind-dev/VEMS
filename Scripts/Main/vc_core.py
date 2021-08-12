@@ -23,57 +23,17 @@ Management
 Scripts
 """
 
+from Scripts.Main.toolbelt import Vcenter
 import getpass
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 import atexit
 from toolbelt import get_host_expiring_certs, get_vm_hosts, get_host_cert_dates
-#place holder for vcenter connection
-vc = ''
-
-#function to connect to vcenter, it takes IP or host name, username, password, and the port.
-def vems_connect(vc_ip,vc_un,vc_pw,vc_port):
-    try:
-        global vc 
-        vc = SmartConnectNoSSL(host=vc_ip, user=vc_un, pwd=vc_pw, port=vc_port)
-        print("Connected to vCenter Successfully")
-        return 1
-    except IOError as e:
-        print ("I/O error({0}): {1}".format(e.errno, e.strerror))
-        return 0
-
-def get_vcinfo():
-    aboutInfo = vc.content.about
-    print ("Product Name:",aboutInfo.fullName)
-    print("Product Build:",aboutInfo.build)
-    print("Product Unique Id:",aboutInfo.instanceUuid)
-    print("Product Version:",aboutInfo.version)
-    print("Product Base OS:",aboutInfo.osType)
-    print("Product vendor:",aboutInfo.vendor)
-    return 0
-
-def get_vclogin():
-    vcenter_host = input("Enter your vCenter IP or Hostname: ")
-    vcenter_port = 443
-    vcenter_username = input("vCenter Username: ")
-    vcenter_password = getpass.getpass(prompt="Password: ", stream=None)
-    login_info = [vcenter_host,vcenter_username,vcenter_password,vcenter_port]
-    return login_info
 
 def main():
-    #print("Hello world!")
-    login_info = get_vclogin()
-    if vems_connect(*login_info):
-        get_vcinfo()
-        #lets get all hosts and all of the expiring certificates
-        try: 
-            hosts = get_vm_hosts(vc)
-            get_host_expiring_certs(vc)
-        except:
-            pass
+    connection = Vcenter(host="",user="",pwd="")
 
 
-        Disconnect(vc)
     return 0
 
 
