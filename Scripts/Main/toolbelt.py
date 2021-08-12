@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import getpass
-from http.client import parse_headers
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 from datetime import datetime, timedelta
@@ -37,7 +35,7 @@ class Vcenter:
             print(host.name)
 
     def get_certificate_expired(self,days):
-        # today = str(datetime.now()).split()
+        today = str(datetime.now()).split()
         today = datetime.strptime(today[0],"%Y-%d-%m")
         for host in self.allhosts:
             try: 
