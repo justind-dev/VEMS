@@ -22,10 +22,12 @@ Environment
 Management
 Scripts
 """
+
 import getpass
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
-
+import atexit
+import toolbelt
 #place holder for vcenter connection
 vc = ''
 
@@ -51,17 +53,26 @@ def get_vcinfo():
     return 0
 
 def get_vclogin():
-    vcenter_host =  input("Enter your vCenter IP or Hostname: ")
+    vcenter_host = input("Enter your vCenter IP or Hostname: ")
     vcenter_port = 443
     vcenter_username = input("vCenter Username: ")
     vcenter_password = getpass.getpass(prompt="Password: ", stream=None)
     login_info = [vcenter_host,vcenter_username,vcenter_password,vcenter_port]
     return login_info
+
 def main():
     #print("Hello world!")
     login_info = get_vclogin()
     if vems_connect(*login_info):
         get_vcinfo()
+        #lets get all hosts and all of the expiring certificates
+        try: 
+            hosts = toolbelt.get_vm_hosts(vc)
+            toolbelt.get_host_expiring_certs(vc)
+        except:
+            pass
+
+
         Disconnect(vc)
     return 0
 
