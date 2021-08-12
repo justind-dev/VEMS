@@ -35,4 +35,5 @@ class Vcenter:
             if mob.name == esxi_hostnames:
                 cert_info = mob.configManager.certificateManager.certificateInfo
                 return (f"Certificate for {esxi_hostnames} Valid from {str(cert_info.notBefore)} to  {str(cert_info.notAfter)}")
+        mob_list.Destroy()
 
