@@ -14,7 +14,8 @@ from toolbelt import Vcenter
 
 def main():
     connection = Vcenter(host="",user="",pwd="",use_ssl=False)
-    print(connection.certificate_expirations())
+    
+    connection.certificate_expirations()
 
     for host in connection.certificates_expiring_in_days(30):
         print(host)

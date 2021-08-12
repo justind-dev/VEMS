@@ -2,7 +2,7 @@
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 import datetime
-
+import pytz
 
 class Vcenter:
     def __init__(self,host,user,pwd,port=443,use_ssl=True):
@@ -48,7 +48,7 @@ class Vcenter:
         expirations = []
         expiration_datetime = datetime.datetime.now() + datetime.timedelta(days=number_of_days)
         for k, v in self.certificate_expirations().items():
-            if v >= expiration_datetime:
+            if v <= pytz.timezone('US/Eastern').localize(expiration_datetime):
                 expirations.append(k)
         return expirations
     
