@@ -12,6 +12,7 @@ from toolbelt import Vcenter
 
 def main():
     connection = Vcenter(host="",user="",pwd="",use_ssl=False)
+    connection.get_hosts()
     
     connection.get_certificate_expirations()
 

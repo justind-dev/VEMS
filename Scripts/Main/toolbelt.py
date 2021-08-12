@@ -13,7 +13,7 @@ class Vcenter:
         self.use_ssl = use_ssl
         self.si = self.connect()
         self.content = ''
-        self.allhosts = self.get_hosts()
+        self.allhosts = {}
        
     def connect(self):
         if self.use_ssl:
@@ -27,7 +27,7 @@ class Vcenter:
             return 0
 
     def get_hosts(self):
-        return self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
+        self.__allhosts =  self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
                                                             [vim.HostSystem],
                                                             True).view
     def print_hostnames(self):
