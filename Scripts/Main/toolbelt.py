@@ -21,7 +21,7 @@ class Vcenter:
             self.si = SmartConnectNoSSL(host=self.host, user=self.user, pwd=self.pwd, port=self.port)
             return self.si
         except IOError as e:
-            #print ("I/O error({0}): {1}".format(e.errno, e.strerror))
+            print ("I/O error({0}): {1}".format(e.errno, e.strerror))
             return 0
 
     def get_vm_hosts(self):
@@ -44,7 +44,8 @@ class Vcenter:
         for mob in mob_list.view:
             if mob.name == esxi_hostname:
                 cert_info = mob.configManager.certificateManager.certificateInfo
-                expiration_date = str(cert_info.notAfter)
+                expiration_date = str(cert_info.notAfter).split(" ")
+                expiration_date = datetime.strptime(expiration_date[0],"%y/%m/%d")
         mob_list.Destroy()
         return expiration_date
 
