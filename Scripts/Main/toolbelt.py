@@ -59,20 +59,3 @@ class Vcenter:
             except:
                 print(f"There was an error comparing dates...")
                 continue
-                    
-
-
-
-
- 
-            
-
-
-    
-
-
-
-
-
-
-
