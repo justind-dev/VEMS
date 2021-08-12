@@ -5,12 +5,18 @@ from pyVmomi import vim, vmodl
 from datetime import datetime
 
 class Vcenter:
-    def __init__(self,host,user,pwd,port=443):
+    def __init__(self,host,user,pwd,port=443,use_ssl=True):
         self.host = host
         self.user = user
         self.pwd = pwd
         self.port = port
-        self.si = ''
+        self.use_ssl = use_ssl
+        self.si = self.connect()
+       
+    def connect():
+        if self.use_ssl:
+            raise Exception("SSL not yet implemented)
+        
         try:
             self.si = SmartConnectNoSSL(host=self.host, user=self.user, pwd=self.pwd, port=self.port)
             return self.si
