@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import getpass
+from http.client import parse_headers
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 from datetime import datetime, timedelta
@@ -36,13 +37,37 @@ class Vcenter:
             print(host.name)
 
     def get_certificate_expired(self,days):
+        # today = str(datetime.now()).split()
+        today = datetime.strptime(today[0],"%Y-%d-%m")
         for host in self.allhosts:
-            expires_string = str(host.configManager.certificateManager.certificateInfo.notAfter).split()
-            expires_string = expires_string[0]
-            expires_date = datetime.strptime(expires_string,"%Y-%d-%m")
-            print(expires_date)
-            if  (expires_date < datetime.now() + timedelta(days)):
-                print(f"Host: {host.name} certificate expires in less than 30 days on {expires_date}")
+            try: 
+                expires_date = str(host.configManager.certificateManager.certificateInfo.notAfter)
+            except:
+                print(f"Issue retrieving certificate details on {host.name}")
+                continue
+            expires_date = expires_date.split()
+            expires_date = str(expires_date[0])
+            try:               
+                expires_date = datetime.strptime(expires_date,"%Y-%m-%d")
+            except ValueError as e:
+                print(f"Date conversion error: {e}")
+                continue
+            #print(f"Host: {host.name} certificate expires on {expires_date}")
+            try: 
+                if  (expires_date < today + timedelta(days)):
+                    print(f"Host: {host.name} certificate expires in less than 30 days on {expires_date}")
+                else:
+                    print(f"Host: {host.name} certificate is OK")
+            except:
+                print(f"There was an error comparing dates...")
+                continue
+                    
+
+
+
+
+ 
+            
 
 
     
