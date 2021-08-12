@@ -5,13 +5,14 @@ from pyVmomi import vim, vmodl
 from datetime import datetime
 
 class Vcenter:
-    def __init__(self,host,user,pwd):
+    def __init__(self,host,user,pwd,port=443):
         self.host = host
         self.user = user
         self.pwd = pwd
+        self.port = port
         self.si = ''
         try:
-            self.si = SmartConnectNoSSL(host=self.host, user=self.user, pwd=self.pwd, port=443)
+            self.si = SmartConnectNoSSL(host=self.host, user=self.user, pwd=self.pwd, port=self.port)
             return self.si
         except IOError as e:
             #print ("I/O error({0}): {1}".format(e.errno, e.strerror))
