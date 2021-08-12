@@ -25,22 +25,27 @@ class Vcenter:
             return 0
 
     def get_vm_hosts(self):
-        host_view = self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
+        hosts = []
+        content_view = self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
                                                             [vim.HostSystem],
                                                             True)
-        hosts = list(host_view.view)
-        host_view.Destroy()
+        host_view = content_view.view
+        content_view.Destroy()
+        for host in host_view:
+            hosts.append(host.name)
         return hosts
 
-    def get_host_cert_dates(self,esxi_hostnames):
+    def get_host_cert_expiration_date(self,esxi_hostname):
         mob = vim.HostSystem
         content = self.si.content
         mob_list = content.viewManager.CreateContainerView(content.rootFolder,
                                                         [mob],
                                                         True)
         for mob in mob_list.view:
-            if mob.name == esxi_hostnames:
+            if mob.name == esxi_hostname:
                 cert_info = mob.configManager.certificateManager.certificateInfo
-                return (f"Certificate for {esxi_hostnames} Valid from {str(cert_info.notBefore)} to  {str(cert_info.notAfter)}")
+                expiration_date = str(cert_info.notAfter)
         mob_list.Destroy()
+        return expiration_date
+
 
