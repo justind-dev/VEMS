@@ -12,10 +12,7 @@ class Vcenter:
         self.port = port
         self.use_ssl = use_ssl
         self.si = self.connect()
-        self.content = ''
-        self.host_view = self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
-                                                            [vim.HostSystem],
-                                                            True).view
+        self._views = [] 
 
     def connect(self):
         if self.use_ssl:
@@ -28,17 +25,46 @@ class Vcenter:
             print ("I/O error({0}): {1}".format(e.errno, e.strerror))
             return 0
 
+    def get_obj(self,content, vimtype, name):
+        """
+        Get the vsphere managed object associated with a given text name
+        """
+        obj = None
+        container = content.viewManager.CreateContainerView(
+            content.rootFolder, vimtype, True)
+        self._views.append(container)
+        for c in container.view:
+            if c.name == name:
+                obj = c
+                break
+        return obj
+
+
+    def get_obj_by_moId(self,content, vimtype, moid):
+        """
+        Get the vsphere managed object by moid value
+        """
+        obj = None
+        container = content.viewManager.CreateContainerView(
+            content.rootFolder, vimtype, True)
+        self._views.append(container)
+        for c in container.view:
+            if c._GetMoId() == moid:
+                obj = c
+                break
+        return obj
+
 class Host:
-    def __init__(self,mobid):
-        self.mobid = self.mobid
-        self.name = self.mobid.name
-        self.connectionState = self.mobid.runtime.connectionState
-        self.powerState = self.mobid.runtime.powerState
-        self.certificateExpirationDate = self.mobid.configManager.certificateManager.certificateInfo.notAfter
+    def __init__(self,moid):
+        self.moid = self.moid
+        self.name = self.moid.name
+        self.connectionState = self.moid.runtime.connectionState
+        self.powerState = self.moid.runtime.powerState
+        self.certificateExpirationDate = self.moid.configManager.certificateManager.certificateInfo.notAfter
         self.certificateStatus = "Unknown"
-        self.bootTime = self.mobid.runtime.bootTime
-        self.fullEsxiVersion = self.mobid.ConfigInfo.product.fullName
-        self.productUUID = self.mobid.ConfigINfo.product.instanceUuid
+        self.bootTime = self.moid.runtime.bootTime
+        self.fullEsxiVersion = self.moid.ConfigInfo.product.fullName
+        self.productUUID = self.moid.ConfigINfo.product.instanceUuid
     
     def print_host_info(self):
         print(f"HOST INFORMATION\n",
