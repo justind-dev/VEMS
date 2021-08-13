@@ -21,15 +21,9 @@ def main():
     keyring_username = credential.username
 
     #create service instance, edit IP / FQDN of vcenter into 'host' argument
-    connection = Vcenter(host="vcenter_ip",user=keyring_username,pwd=keyring_pass,use_ssl=False)
-
+    connection = Vcenter(host="vcenter_ip_or_fqdn",user=keyring_username,pwd=keyring_pass,use_ssl=False)
 
     return 0
-
-
-
-
-
 
 # Start program
 if __name__ == "__main__":
