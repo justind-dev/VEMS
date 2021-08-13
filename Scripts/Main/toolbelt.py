@@ -13,8 +13,9 @@ class Vcenter:
         self.use_ssl = use_ssl
         self.si = self.connect()
         self.content = ''
-        self.allhosts = {}
-        self.certficate_expirations = {}
+        self.host_view = self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
+                                                            [vim.HostSystem],
+                                                            True).view
 
     def connect(self):
         if self.use_ssl:
@@ -27,29 +28,40 @@ class Vcenter:
             print ("I/O error({0}): {1}".format(e.errno, e.strerror))
             return 0
 
-    def get_hosts(self):
-        self.allhosts =  self.si.content.viewManager.CreateContainerView(self.si.content.rootFolder,
-                                                            [vim.HostSystem],
-                                                            True).view
-    def print_hostnames(self):
-        for host in self.allhosts:
-            print(host.name)
-
-    def get_certificate_expirations(self):
-        for host in self.allhosts:
-            try:
-                self.certficate_expirations[host.name] = host.configManager.certificateManager.certificateInfo.notAfter
-            except:
-                self.certficate_expirations[host.name] = "Could not retrieve"
-                continue
-        
+class Host:
+    def __init__(self,mobid):
+        self.mobid = self.mobid
+        self.name = self.mobid.name
+        self.connectionState = self.mobid.runtime.connectionState
+        self.powerState = self.mobid.runtime.powerState
+        self.certificateExpirationDate = self.mobid.configManager.certificateManager.certificateInfo.notAfter
+        self.certificateStatus = "Unknown"
+        self.bootTime = self.mobid.runtime.bootTime
+        self.fullEsxiVersion = self.mobid.ConfigInfo.product.fullName
+        self.productUUID = self.mobid.ConfigINfo.product.instanceUuid
     
-    def certificates_expiring_in_days(self, number_of_days):
-        expirations = []
+    def print_host_info(self):
+        print(f"HOST INFORMATION\n",
+                f"Name: {self.name}\n",
+                f"Connection State: {self.connectionState}\n",
+                f"Power State: {self.powerState}\n",
+                f"Certificate Expiration Date: {self.certificateExpirationDate}\n",
+                f"Last boot time: {self.bootTime}\n",
+                f"Full Product Information: {self.fullEsxiVersion}\n",
+                f"Product UUID: {self.productUUID}\n"         
+            )
+
+    def check_certificate_expiration(self, number_of_days):
         expiration_datetime = datetime.datetime.now() + datetime.timedelta(days=number_of_days)
         expiration_datetime = pytz.timezone("UTC").localize(expiration_datetime)
-        for k, v in self.certficate_expirations.items():
-            if not v == "Could not retrieve" and v<= expiration_datetime:
-                expirations.append(k)
-        return expirations
-    
+        if not self.connectionState == "Connected":
+            if self.certificateExpirationDate <= expiration_datetime:
+                self.certificateStatus = "Certificate Expiring Soon"
+            else:
+                self.certificateStatus = "Certificate OK"
+        else:
+            self.certificateStatus = "Unable to querey, check host connection"
+
+
+# now, instead of generating storing host information in tuples or lists or dicts 
+# we can store all information related to a host in a class
