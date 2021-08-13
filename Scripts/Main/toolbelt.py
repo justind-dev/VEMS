@@ -1,15 +1,14 @@
 #!/usr/bin/env python
-import keyring
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 import datetime
 import pytz
 
 class Vcenter:
-    def __init__(self,host,user,port=443,use_ssl=True):
+    def __init__(self,host,user,pwd,port=443,use_ssl=True):
         self.host = host
         self.user = user
-        self.pwd = keyring.get_password("vems_vsphere",self.user)
+        self.pwd = pwd
         self.port = port
         self.use_ssl = use_ssl
         self.si = self.connect()
@@ -48,9 +47,9 @@ class Vcenter:
     def certificates_expiring_in_days(self, number_of_days):
         expirations = []
         expiration_datetime = datetime.datetime.now() + datetime.timedelta(days=number_of_days)
+        expiration_datetime = pytz.timezone("UTC").localize(expiration_datetime)
         for k, v in self.certficate_expirations.items():
-            if not k == "Could not retrieve":
-                if v <= pytz.timezone('US/Eastern').localize(expiration_datetime):
-                    expirations.append(k)
+            if not v == "Could not retrieve" and v<= expiration_datetime:
+                expirations.append(k)
         return expirations
     
