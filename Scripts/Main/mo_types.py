@@ -1,61 +1,22 @@
 #!/usr/bin/env python
+
+"""
+    I do not know yet if we will be using this or not. 
+    It's possible that it would be good if you are doing a very
+    detailed report of the environment or cluster etc.
+
+    We shall see, leaving for now.
+
+"""
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 import datetime
 import pytz
 
-class Vcenter:
-    def __init__(self,host,user,pwd,port=443,use_ssl=True):
-        self.host = host
-        self.user = user
-        self.pwd = pwd
-        self.port = port
-        self.use_ssl = use_ssl
-        self.si = self.connect()
-        self._views = [] 
-
-    def connect(self):
-        if self.use_ssl:
-            raise Exception("SSL not yet implemented")
-        
-        try:
-            self.si = SmartConnectNoSSL(host=self.host, user=self.user, pwd=self.pwd, port=self.port)
-            return self.si
-        except IOError as e:
-            print ("I/O error({0}): {1}".format(e.errno, e.strerror))
-            return 0
-
-    def get_obj(self,content, vimtype, name):
-        """
-        Get the vsphere managed object associated with a given text name
-        """
-        obj = None
-        container = content.viewManager.CreateContainerView(
-            content.rootFolder, vimtype, True)
-        self._views.append(container)
-        for c in container.view:
-            if c.name == name:
-                obj = c
-                break
-        return obj
-
-
-    def get_obj_by_moId(self,content, vimtype, moid):
-        """
-        Get the vsphere managed object by moid value
-        """
-        obj = None
-        container = content.viewManager.CreateContainerView(
-            content.rootFolder, vimtype, True)
-        self._views.append(container)
-        for c in container.view:
-            if c._GetMoId() == moid:
-                obj = c
-                break
-        return obj
 
 class Host:
-    def __init__(self,moid):
+    def __init__(self,view,moid):
+        self.view = view
         self.moid = self.moid
         self.name = self.moid.name
         self.connectionState = self.moid.runtime.connectionState
@@ -88,6 +49,3 @@ class Host:
         else:
             self.certificateStatus = "Unable to querey, check host connection"
 
-
-# now, instead of generating storing host information in tuples or lists or dicts 
-# we can store all information related to a host in a class
