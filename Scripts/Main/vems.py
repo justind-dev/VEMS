@@ -42,7 +42,7 @@ def main():
 
     # Let's run some reports...
     print("HOSTS WITH CERTIFICATES EXPIRING SOON")
-    reports.print_hosts_with_certificates_expiring_in_days(service_manager,view_manager,180)
+    reports.print_hosts_with_certificates_expiring_in_days(service_manager, 30)
 
     #Clean up...
     service_manager.disconnect()

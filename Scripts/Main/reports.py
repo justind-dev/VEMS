@@ -20,30 +20,15 @@ def print_host_names(service_manager, view_manager):
         host_name = view_manager.get_obj(service_manager.content,
                                          vim.HostSystem,host).name
         print(host_name)
-   
-
-def get_host_certificate_expiration_by_name(self, content, name):
-    """
-    Get the exiration date of a certificate for a host
-    """
-    certificate = None
-    container = content.viewManager.CreateContainerView(
-        content.rootFolder, [vim.HostSystem], True)
-    self._views.append(container)
-    for host in container.view:
-        if host.name == name:
-            certificate = host.configManager.certificateManager.certificateInfo.notAfter
-            break
-    return certificate
 
 
-def get_certificates_expiring_in_days(service_manager, view_manager, number_of_days):
+def get_certificates_expiring_in_days(service_manager, number_of_days):
     expiration_dates = {}
     returned_expirations = []
     expiration_datetime = datetime.datetime.now() + datetime.timedelta(days=number_of_days)
     container = service_manager.content.viewManager.CreateContainerView(
-        service_manager.content.rootFolder, [vim.HostSystem], True)
-
+                                            service_manager.content.rootFolder,
+                                            [vim.HostSystem], True)  
     for host in container.view:
         try:
             expiration_dates[host.name] = host.configManager.certificateManager.certificateInfo.notAfter
@@ -60,8 +45,8 @@ def get_certificates_expiring_in_days(service_manager, view_manager, number_of_d
     return returned_expirations
 
 
-def print_hosts_with_certificates_expiring_in_days(service_manager, view_manager, number_of_days):
-    for host in get_certificates_expiring_in_days(service_manager,view_manager, number_of_days):
+def print_hosts_with_certificates_expiring_in_days(service_manager, number_of_days):
+    for host in get_certificates_expiring_in_days(service_manager, number_of_days):
         print(f"{host} certificate expires in {number_of_days} days or less.")
 
-
+    
