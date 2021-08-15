@@ -7,10 +7,10 @@ VMWare Environment Management Scripts"
 You will need to store credentials for smtp and the vsphere connection 
 using KEYRING module first. 
 
-credential service name = vems_vsphere
+credential vsphere name = vems_vsphere
 
 """
-import ssl, keyring, atexit
+import ssl, keyring, atexit,sys
 from pyVmomi import vim, vmodl
 from connection_manager import ServiceManager, ViewManager
 import reports
@@ -23,19 +23,28 @@ def main():
     keyring_pass = credential.password
     keyring_username = credential.username
 
-    #create service instance, edit IP / FQDN of vcenter into 'host' argument
-    # the view_manager handles our views and objects and tasks
     service_manager = ServiceManager(server="vcenter_ip_or_fqdn",
                                      username=keyring_username,
                                      password=keyring_pass)
-    service_manager.connect()
-    view_manager = ViewManager()
+    print("Connecting to VAPI...")
+    try: 
+        service_manager.connect()
+    except:
+        print("Could not make connection, check connection, or credentials ")
+        sys.exit()
 
-    #Here we can define our reports
-    reports.print_host_names(service_manager,view_manager)
+    print("Creating VAPI view manager...")
+    try:
+        view_manager = ViewManager()
+    except:
+        print("Could not create VAPI view manager")
+        service_manager.disconnect()
 
+    # Let's run some reports...
+    print("HOSTS WITH CERTIFICATES EXPIRING SOON")
+    reports.print_hosts_with_certificates_expiring_in_days(service_manager,view_manager,180)
 
-    #Clean Up
+    #Clean up...
     service_manager.disconnect()
     atexit.register(view_manager.destroy_container_views)
     

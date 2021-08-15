@@ -44,6 +44,7 @@ class ViewManager(object):
     def __init__(self):
         self._views = []  # list of container views
 
+
     def get_obj(self,content, vimtype, name):
         """
         Get the vsphere managed object associated with a given text name
@@ -72,7 +73,8 @@ class ViewManager(object):
                 obj = c
                 break
         return obj
-    
+
+
     def get_all_objects(self, content, vimtype):
         """
         Get all managed objects of a certain type
@@ -84,6 +86,7 @@ class ViewManager(object):
         for c in container.view:
             objects[c.name] = c
         return objects
+
 
     def destroy_container_views(self):
         for view in self._views:
