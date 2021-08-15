@@ -22,19 +22,6 @@ def print_host_names(service_manager, view_manager):
         print(host_name)
    
 
-def get_certificate_expirations(service_manager, view_manager):
-    expirations = {}
-    # a list of objects are returned.
-    all_hosts = view_manager.get_all_objects(service_manager.content, 
-                                             vim.HostSystem)
-    for hostname in all_hosts:
-        try:
-            expirations[hostname] = view_manager.get_host_certificate_expiration(service_manager.content,hostname)
-        except:
-            expirations[hostname] = "Certificate could not be retrieved, check host."
-            continue
-    return expirations
-
 def get_host_certificate_expiration_by_name(self, content, name):
     """
     Get the exiration date of a certificate for a host
@@ -76,6 +63,5 @@ def get_certificates_expiring_in_days(service_manager, view_manager, number_of_d
 def print_hosts_with_certificates_expiring_in_days(service_manager, view_manager, number_of_days):
     for host in get_certificates_expiring_in_days(service_manager,view_manager, number_of_days):
         print(f"{host} certificate expires in {number_of_days} days or less.")
-
 
 
