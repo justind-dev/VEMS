@@ -10,16 +10,18 @@ using KEYRING module first.
 credential vsphere name = vems_vsphere
 
 """
-import ssl, keyring, atexit,sys
-from pyVmomi import vim, vmodl
-from connection_manager import ServiceManager, ViewManager
+import atexit
+import keyring
+import sys
+
 import reports
+from connection_manager import ServiceManager, ViewManager
 
 
 def main():
-    #GET CREDENTIALS
-    #modify this line to match your username stored in vems_vsphere credential object
-    credential = keyring.get_credential("vems_vsphere","Administrator@vsphere.local")
+    # GET CREDENTIALS
+    # modify this line to match your username stored in vems_vsphere credential object
+    credential = keyring.get_credential("vems_vsphere", "Administrator@vsphere.local")
     keyring_pass = credential.password
     keyring_username = credential.username
 
