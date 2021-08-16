@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Customizable reports for vSphere enviornment
+Customizable reports for vSphere environment
 
 VMWare Environment Management Scripts"
 
@@ -29,7 +29,7 @@ def main():
                                      username=keyring_username,
                                      password=keyring_pass)
     print("Connecting to VAPI...")
-    try: 
+    try:
         service_manager.connect()
     except:
         print("Could not make connection, check connection, or credentials ")
@@ -46,13 +46,13 @@ def main():
     print("HOSTS WITH CERTIFICATES EXPIRING SOON")
     reports.print_hosts_with_certificates_expiring_in_days(service_manager, 30)
 
-    #Clean up...
+    # Clean up...
     service_manager.disconnect()
     atexit.register(view_manager.destroy_container_views)
-    
+
     return 0
+
 
 # Start program
 if __name__ == "__main__":
     main()
-
