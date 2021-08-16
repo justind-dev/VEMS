@@ -25,7 +25,7 @@ def main():
     keyring_pass = credential.password
     keyring_username = credential.username
 
-    service_manager = ServiceManager(server="192.168.1.200",
+    service_manager = ServiceManager(server="vcenter_ip_or_fqdn",
                                      username=keyring_username,
                                      password=keyring_pass)
     print("Connecting to VAPI...")
