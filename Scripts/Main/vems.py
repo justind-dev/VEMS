@@ -25,7 +25,7 @@ def main():
     keyring_pass = credential.password
     keyring_username = credential.username
 
-    service_manager = ServiceManager(server="vcenter_ip_or_fqdn",
+    service_manager = ServiceManager(server="192.168.1.200",
                                      username=keyring_username,
                                      password=keyring_pass)
     print("Connecting to VAPI...")
@@ -44,7 +44,7 @@ def main():
 
     # Let's run some reports...
     print("HOSTS WITH CERTIFICATES EXPIRING SOON")
-    reports.print_hosts_with_certificates_expiring_in_days(service_manager, 30)
+    reports.print_hosts_with_certificates_expiring_in_days(service_manager, 9000)
 
     # Clean up...
     service_manager.disconnect()

@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 from pyVim.connect import SmartConnectNoSSL, Disconnect
-from pyVmomi import vim, vmodl
-import datetime, atexit
-import pytz
+from pyVmomi import vmodl
+
 
 class ServiceManager(object):
     """
     Connects to services on a vCenter node.
     """
-    def __init__(self, server, username, password):
 
+    def __init__(self, server, username, password):
         self.server_url = server
         self.username = username
         self.password = password
@@ -21,11 +20,10 @@ class ServiceManager(object):
 
     def connect(self):
         # Connect to VIM API Endpoint on vCenter Server system
-        context = None
         self.si = SmartConnectNoSSL(host=self.server_url,
-                               user=self.username,
-                               pwd=self.password
-                               )
+                                    user=self.username,
+                                    pwd=self.password
+                                    )
         assert self.si is not None
 
         # Retrieve the service content
@@ -37,15 +35,16 @@ class ServiceManager(object):
         print('disconnecting the session')
         Disconnect(self.si)
 
+
 class ViewManager(object):
     """
     Handles the views and tasks.
     """
+
     def __init__(self):
         self._views = []  # list of container views
 
-
-    def get_obj(self,content, vimtype, name):
+    def get_obj(self, content, vimtype, name):
         """
         Get the vsphere managed object associated with a given text name
         """
@@ -59,8 +58,7 @@ class ViewManager(object):
                 break
         return obj
 
-
-    def get_obj_by_moId(self, content, vimtype, moid):
+    def get_obj_by_moid(self, content, vimtype, moid):
         """
         Get the vsphere managed object by moid value
         """
@@ -74,7 +72,6 @@ class ViewManager(object):
                 break
         return obj
 
-
     def get_all_objects(self, content, vimtype):
         """
         Get all managed objects of a certain type
@@ -87,12 +84,9 @@ class ViewManager(object):
             objects[c.name] = c
         return objects
 
-
     def destroy_container_views(self):
         for view in self._views:
             try:
                 view.Destroy()
             except vmodl.fault.ManagedObjectNotFound:
                 pass  # silently bypass the exception if the objects are already deleted/not found on the server
-
-

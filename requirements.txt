@@ -1,2 +1,4 @@
 keyring>=23.1.0
 pyvmomi>=7.0.2
+pytz>=2021.1
+pyVim>=3.0.2
