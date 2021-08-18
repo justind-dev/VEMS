@@ -38,7 +38,7 @@ def main():
         service_manager.disconnect()
 
     # Let's run some reports...
-    print(view_manager.get_host_conn_state("192.168.1.240"))
+    print(view_manager.get_host_conn_state("Host IP"))
 
     # Clean up...
     service_manager.disconnect()

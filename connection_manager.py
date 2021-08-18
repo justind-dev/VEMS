@@ -76,9 +76,13 @@ class ViewManager(object):
             return f"Error getting connection state for {name}"
 
     def destroy_container_views(self):
-        for view in self._views:
-            try:
-                view.Destroy()
-            except vmodl.fault.ManagedObjectNotFound:
-                # silently bypass the exception if the objects are already deleted/not found on the server
-                pass
+        if len(self._views) > 0:
+            for k, v in self._views.items():
+                try:
+                    v.view.Destroy()
+                except vmodl.fault.ManagedObjectNotFound:
+                    # silently bypass the exception if the objects are already deleted/not found on the server
+                    continue
+        else:
+            print("No views to destroy")
+            exit()
