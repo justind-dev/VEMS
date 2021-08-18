@@ -46,6 +46,9 @@ class ViewManager(object):
         self.content = service_manager.content
 
     def create_view(self, vimtype):
+        """
+         Return view based on vimtype, if it doesnt exist create it.
+        """
         if vimtype in self._views:
             container = self._views[vimtype]
             return container
@@ -67,13 +70,15 @@ class ViewManager(object):
                 break
         return obj
 
-    def get_host_conn_state(self, name):
-        host = self.get_obj(vim.HostSystem, name)
-        if not host is None:
-            conn_state = host.runtime.connectionState
-            return conn_state
-        else:
-            return f"Error getting connection state for {name}"
+    def get_all_obj(self, vimtype):
+        """
+         Get the all vsphere managed objects of a certain type
+        """
+        objects = []
+        container = self.create_view(vimtype)
+        for child_object in container.view:
+            objects.append(child_object)
+        return objects
 
     def destroy_container_views(self):
         if len(self._views) > 0:
@@ -86,3 +91,4 @@ class ViewManager(object):
         else:
             print("No views to destroy")
             exit()
+

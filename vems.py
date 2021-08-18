@@ -14,11 +14,20 @@ import atexit
 import keyring
 import sys
 from connection_manager import ServiceManager, ViewManager
+from toolbelt import Report
 
 
 def main():
-    # GET CREDENTIALS
-    # modify this line to match your username stored in vems_vsphere credential object
+
+    """
+        CONNECT TO SERVICE MANAGER
+        Modify this section to match your username stored in vems_vsphere credential object
+        as created by keyring ahead of time.
+
+        Modify vcenter_ip_or_fqdn to match your own vcenter ip address of fully qualified
+        domain name.
+    """
+
     credential = keyring.get_credential("vems_vsphere", "Administrator@vsphere.local")
     keyring_pass = credential.password
     keyring_username = credential.username
@@ -37,8 +46,13 @@ def main():
         print("Could not create VAPI view manager")
         service_manager.disconnect()
 
-    # Let's run some reports...
-    print(view_manager.get_host_conn_state("Host IP"))
+    """
+        REPORTS SECTION
+        Here you call the reports you have defined in toolbelt.py
+    """
+    reports = Report(service_manager, view_manager)
+
+    reports.create_report()
 
     # Clean up...
     service_manager.disconnect()
