@@ -13,8 +13,6 @@ credential vsphere name = vems_vsphere
 import atexit
 import keyring
 import sys
-
-import reports
 from connection_manager import ServiceManager, ViewManager
 
 
@@ -28,23 +26,19 @@ def main():
     service_manager = ServiceManager(server="vcenter_ip_or_fqdn",
                                      username=keyring_username,
                                      password=keyring_pass)
-    print("Connecting to VAPI...")
     try:
         service_manager.connect()
     except:
         print("Could not make connection, check connection, or credentials ")
         sys.exit()
-
-    print("Creating VAPI view manager...")
     try:
-        view_manager = ViewManager()
+        view_manager = ViewManager(service_manager)
     except:
         print("Could not create VAPI view manager")
         service_manager.disconnect()
 
     # Let's run some reports...
-    print("HOSTS WITH CERTIFICATES EXPIRING SOON")
-    reports.print_hosts_with_certificates_expiring_in_days(service_manager, 9000)
+    print(view_manager.get_host_conn_state("192.168.1.240"))
 
     # Clean up...
     service_manager.disconnect()
