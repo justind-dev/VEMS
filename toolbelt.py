@@ -12,6 +12,7 @@ class Report:
     def __init__(self, service_manager, view_manager):
         self.content = service_manager.content
         self.view_manager = view_manager
+        self.hosts = {}
         self.report_heading = """<html>
         <head>
         <title>VEMS Report</title>
@@ -24,7 +25,10 @@ class Report:
         self.report_end = """</body></html>"""
 
     def create_report(self):
+        print("GENERATING REPORTS")
+        print("Finding disconnected hosts...")
         self.report_hosts_disconnected()
+        print("Finding hosts not resonding...")
         self.report_hosts_not_responding()
 
         report = self.report_heading + str(self.report_body) + self.report_end
@@ -43,6 +47,12 @@ class Report:
             return host_connection_states
         else:
             return f"Could not get host connection states"
+
+    def tool_gather_host_information(self):
+        allhosts = self.view_manager.get_all_obj(vim.HostSystem)
+        for host in allhosts:
+            self.hosts[host.name] = Host(self.content, self.view_manager, host)
+        pass
 
     def tool_host_with_connection_state(self, state_check):
         host_states = self.tool_get_host_connection_states()
@@ -71,4 +81,15 @@ class Report:
                 self.report_body += host_not_responding+"<br>"
         else:
             self.report_body += r"<i>No hosts not responding</i>"
+
+
+class Host:
+    def __init__(self, content, view_manager, host_object):
+        self.content = content
+        self.view_manager = view_manager
+        self.host_object = host_object
+        self.name = host_object.name
+        self.connection_state = host_object.runtime.connectionState
+        self.certificate_expiration_date = host_object.configManager.certificateManager.certificateInfo.notAfter
+
 
